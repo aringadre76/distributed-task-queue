@@ -1,0 +1,93 @@
+# Distributed Task Queue - Recommended .gitignore
+
+# Go template (GitHub will add this automatically)
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
+
+# Go workspace file
+go.work
+
+# === PROJECT-SPECIFIC ADDITIONS ===
+
+# Environment and configuration files
+.env
+.env.local
+.env.*.local
+config/local.yaml
+config/secrets.yaml
+*.key
+*.pem
+*.crt
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+.docker/
+
+# Kubernetes
+kustomization.yaml
+secrets/
+*.kubeconfig
+
+# Database files (local development)
+*.sqlite
+*.sqlite3
+*.db
+postgres-data/
+redis-data/
+
+# Monitoring and metrics
+prometheus-data/
+grafana-data/
+*.metrics
+logs/
+*.log
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Build and dist directories
+dist/
+build/
+bin/
+tmp/
+
+# Test coverage
+coverage.out
+coverage.html
+*.cover
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Local development overrides
+docker-compose.local.yml
+helm-values.local.yaml 

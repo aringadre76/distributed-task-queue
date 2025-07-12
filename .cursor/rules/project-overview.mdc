@@ -1,0 +1,347 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Distributed Task Queue System - Project Specification
+
+## Project Overview
+**Name:** Distributed Task Queue System
+**Type:** Backend Infrastructure / Distributed Systems
+**Purpose:** Build a scalable, reliable distributed system for queuing and processing tasks across multiple worker nodes
+**Target Role Alignment:** Senior Backend Engineer, Distributed Systems Engineer, DevOps Engineer
+
+## Project Goals
+
+### Primary Objectives
+- Demonstrate distributed systems architecture knowledge
+- Show proficiency with container orchestration and cloud-native technologies
+- Implement production-ready reliability patterns (retries, circuit breakers, monitoring)
+- Build horizontally scalable microservices architecture
+- Showcase Go programming and concurrent systems design
+
+### Resume Value Proposition
+- Fills distributed systems gap in current portfolio
+- Adds highly demanded technologies (Go, Kubernetes, message queues)
+- Shows enterprise-level system design thinking
+- Demonstrates scalability and performance optimization skills
+- Complements existing backend and monitoring experience
+
+## Technical Stack
+
+### Core Technologies
+**Primary Language:** Go
+- **Rationale:** Excellent concurrency model, Docker-friendly, high industry demand
+- **Key Features:** Goroutines, channels, performance optimization, HTTP servers
+
+**Message Queue:** Redis + RabbitMQ
+- **Redis:** Fast pub/sub for real-time updates and simple queuing
+- **RabbitMQ:** Reliable message delivery with persistence and advanced routing
+- **Features:** Message durability, dead letter queues, priority queues
+
+**Container Orchestration:** Docker + Kubernetes
+- **Docker:** Container packaging and local development
+- **Kubernetes:** Production deployment, auto-scaling, service discovery
+- **Features:** Pod scaling, config management, rolling updates
+
+**Monitoring Stack:** Prometheus + Grafana
+- **Prometheus:** Metrics collection and alerting
+- **Grafana:** Visualization dashboards
+- **Custom Metrics:** Queue depth, processing time, error rates, throughput
+
+**Database:** PostgreSQL + Redis
+- **PostgreSQL:** Task metadata, results storage, audit logs
+- **Redis:** Fast task queuing, caching, session storage
+
+## System Architecture
+
+### High-Level Components
+```
+[Client Applications] 
+    ↓ HTTP/REST
+[API Gateway / Load Balancer]
+    ↓ 
+[Task Submission Service (Go)]
+    ↓ 
+[Message Queue (Redis/RabbitMQ)]
+    ↓ 
+[Worker Pool (Go Microservices)]
+    ↓ 
+[Results Storage (PostgreSQL)]
+    ↓ 
+[Monitoring (Prometheus/Grafana)]
+```
+
+### Microservices Breakdown
+1. **API Gateway Service**
+   - Task submission endpoints
+   - Authentication and rate limiting
+   - Load balancing to backend services
+
+2. **Queue Management Service**
+   - Task validation and serialization
+   - Queue routing and prioritization
+   - Status tracking and updates
+
+3. **Worker Orchestrator**
+   - Worker pool management
+   - Task distribution
+   - Health monitoring and auto-scaling
+
+4. **Individual Worker Nodes**
+   - Task execution engines
+   - Result reporting
+   - Resource monitoring
+
+5. **Results Service**
+   - Result storage and retrieval
+   - Task history and analytics
+   - Cleanup and archival
+
+## Core Features
+
+### Phase 1: Foundation (Weeks 1-4)
+**Task Submission API**
+- REST endpoints: POST /tasks, GET /tasks/{id}, GET /tasks/status
+- JSON task payload validation
+- Basic authentication (API keys)
+- Rate limiting per client
+- Task UUID generation and tracking
+
+**Basic Queue Management**
+- FIFO task processing
+- Task states: pending → running → completed/failed
+- Simple in-memory queue (development)
+- Redis queue (production)
+- Task timeout handling
+
+**Worker Implementation**
+- Basic worker process in Go
+- Task polling from queue
+- Configurable task execution
+- Result reporting back to system
+- Worker health checks
+
+### Phase 2: Reliability (Weeks 5-6)
+**Error Handling & Retries**
+- Exponential backoff retry logic
+- Maximum retry attempts configuration
+- Dead letter queue for permanently failed tasks
+- Error classification and routing
+
+**Worker Management**
+- Worker failure detection
+- Automatic worker restart
+- Graceful shutdown handling
+- Worker pool scaling based on queue depth
+
+**Data Persistence**
+- PostgreSQL integration for task metadata
+- Transaction support for atomic operations
+- Task history and audit logging
+- Backup and recovery procedures
+
+### Phase 3: Scalability (Weeks 7-8)
+**Horizontal Scaling**
+- Kubernetes deployment manifests
+- Horizontal Pod Autoscaler configuration
+- Service discovery and load balancing
+- Stateless worker design
+
+**Performance Optimization**
+- Connection pooling for databases
+- Batch processing capabilities
+- Parallel task execution
+- Memory and CPU optimization
+
+**Advanced Queue Features**
+- Priority queues (high/medium/low)
+- Task dependencies and DAG support
+- Scheduled/delayed task execution
+- Queue partitioning for better throughput
+
+### Phase 4: Production Features (Weeks 9-10)
+**Monitoring & Observability**
+- Custom Prometheus metrics
+- Grafana dashboards for system health
+- Alerting rules for critical failures
+- Distributed tracing with Jaeger
+- Structured logging with correlation IDs
+
+**Security & Multi-tenancy**
+- JWT-based authentication
+- Client isolation and resource quotas
+- API rate limiting per tenant
+- Audit logging for compliance
+
+**Operational Tools**
+- CLI tool for system administration
+- Health check endpoints
+- Graceful deployment and rollback
+- Database migration scripts
+
+## Sample Use Cases
+
+### Image Processing Pipeline
+**Purpose:** Demonstrate CPU-intensive workload distribution
+**Tasks:** Image resizing, format conversion, watermarking, thumbnail generation
+**Features:** File upload handling, progress tracking, batch processing
+
+### Email Campaign System
+**Purpose:** Show I/O-bound workload with rate limiting
+**Tasks:** Email template processing, recipient list handling, delivery tracking
+**Features:** Delivery scheduling, bounce handling, unsubscribe processing
+
+### Data ETL Jobs
+**Purpose:** Demonstrate long-running task management
+**Tasks:** CSV processing, data transformation, database loading, validation
+**Features:** Progress reporting, partial failure recovery, data quality checks
+
+## Implementation Roadmap
+
+### Week 1-2: Project Setup
+- Initialize Go modules and project structure
+- Set up basic HTTP server with Gin framework
+- Implement task submission API endpoints
+- Create basic task models and validation
+- Set up Redis connection and basic queuing
+
+### Week 3-4: Core Queue Logic
+- Implement worker polling mechanism
+- Add task status tracking and updates
+- Create basic task execution framework
+- Add PostgreSQL integration for persistence
+- Implement task timeout and cancellation
+
+### Week 5-6: Reliability Features
+- Add retry logic with exponential backoff
+- Implement dead letter queue handling
+- Create worker health monitoring
+- Add graceful shutdown procedures
+- Implement basic error classification
+### Week 7-8: Containerization & Scaling
+- Create Dockerfiles for all services
+- Set up docker-compose for local development
+- Create Kubernetes deployment manifests
+- Implement horizontal pod autoscaling
+- Add service discovery and load balancing
+
+### Week 9-10: Monitoring & Production
+- Integrate Prometheus metrics collection
+- Create Grafana dashboards
+- Set up alerting rules
+- Add structured logging
+- Performance testing and optimization
+- Documentation and demo preparation
+
+## Repository Structure
+```
+distributed-task-queue/
+├── cmd/
+│   ├── api-server/         # API gateway service
+│   ├── worker/             # Worker node implementation
+│   ├── queue-manager/      # Queue management service
+│   └── cli/                # Administrative CLI tool
+├── internal/
+│   ├── api/                # HTTP handlers and routing
+│   ├── queue/              # Queue management logic
+│   ├── worker/             # Task execution engine
+│   ├── models/             # Data models and validation
+│   ├── database/           # Database connections and queries
+│   └── monitoring/         # Metrics and health checks
+├── pkg/
+│   ├── client/             # Go client library
+│   └── types/              # Shared types and interfaces
+├── deployments/
+│   ├── docker/             # Dockerfiles and compose files
+│   ├── kubernetes/         # K8s manifests and Helm charts
+│   └── monitoring/         # Prometheus and Grafana configs
+├── examples/
+│   ├── image-processor/    # Sample image processing tasks
+│   ├── email-sender/       # Sample email campaign tasks
+│   └── data-etl/           # Sample ETL job tasks
+├── scripts/
+│   ├── setup.sh           # Development environment setup
+│   ├── deploy.sh          # Deployment automation
+│   └── test.sh            # Testing and validation
+├── docs/
+│   ├── architecture.md    # System architecture overview
+│   ├── api.md             # API documentation
+│   ├── deployment.md      # Deployment guide
+│   └── monitoring.md      # Monitoring and alerting guide
+├── tests/
+│   ├── integration/       # Integration test suites
+│   ├── load/              # Load testing scripts
+│   └── unit/              # Unit tests
+├── go.mod
+├── go.sum
+├── Makefile               # Build and development commands
+├── README.md              # Project overview and quick start
+└── docker-compose.yml     # Local development environment
+```
+
+## Success Metrics
+
+### Technical Achievements
+- Handle 1000+ tasks per second throughput
+- Achieve 99.9% task completion reliability
+- Sub-100ms API response times
+- Auto-scaling from 1 to 50+ workers based on load
+- Zero-downtime deployments
+
+### Resume Talking Points
+- "Architected and implemented a horizontally scalable distributed task processing system"
+- "Achieved 99.9% reliability through implementing retry mechanisms, circuit breakers, and dead letter queues"
+- "Designed auto-scaling solution that reduced infrastructure costs by 40% during low-demand periods"
+- "Built comprehensive monitoring with custom Prometheus metrics and Grafana dashboards"
+- "Implemented container orchestration with Kubernetes supporting zero-downtime deployments"
+
+## Development Environment Setup
+
+### Prerequisites
+- Go 1.21+
+- Docker and Docker Compose
+- kubectl (for Kubernetes development)
+- PostgreSQL 14+
+- Redis 7+
+
+### Quick Start Commands
+```bash
+# Clone and setup
+git clone <repository>
+cd distributed-task-queue
+make setup
+
+# Start local development environment
+make dev-up
+
+# Run tests
+make test
+
+# Build all services
+make build
+
+# Deploy to Kubernetes
+make deploy
+```
+
+## Learning Outcomes
+
+### Technical Skills Gained
+- **Go Programming:** Goroutines, channels, HTTP servers, JSON handling
+- **Distributed Systems:** Message queues, worker pools, service discovery
+- **Container Orchestration:** Docker, Kubernetes, auto-scaling
+- **Monitoring:** Prometheus metrics, Grafana dashboards, alerting
+- **Database Design:** PostgreSQL schemas, Redis data structures
+- **API Design:** REST principles, authentication, rate limiting
+- **DevOps:** CI/CD pipelines, infrastructure as code
+
+### System Design Concepts
+- Horizontal vs vertical scaling
+- Load balancing strategies
+- Fault tolerance and reliability patterns
+- Monitoring and observability
+- Security in distributed systems
+- Performance optimization techniques
+
+This project directly addresses distributed systems knowledge gaps while building on existing backend development and monitoring experience from previous projects. 

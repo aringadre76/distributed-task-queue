@@ -17,6 +17,14 @@ import (
 	"go.uber.org/zap"
 )
 
+// Valid task types that the system supports
+var validTaskTypes = map[string]bool{
+	"test_task":        true,
+	"image_processing": true,
+	"email_sending":    true,
+	"data_etl":         true,
+}
+
 type TaskHandler struct {
 	taskRepo           database.TaskRepository
 	workerRepo         database.WorkerRepository
@@ -66,6 +74,12 @@ func (h *TaskHandler) SubmitTask(c *gin.Context) {
 		return
 	}
 
+	// Validate task type
+	if !validTaskTypes[req.Type] {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid task type", "details": fmt.Sprintf("Task type '%s' is not supported. Valid types: %v", req.Type, getValidTaskTypes())})
+		return
+	}
+
 	taskModel := models.FromTaskRequest(&req)
 
 	if err := h.taskRepo.Create(c.Request.Context(), taskModel); err != nil {
@@ -95,6 +109,15 @@ func (h *TaskHandler) SubmitTask(c *gin.Context) {
 		zap.String("priority", string(task.Priority)))
 
 	c.JSON(http.StatusCreated, response)
+}
+
+// getValidTaskTypes returns a slice of valid task types for error messages
+func getValidTaskTypes() []string {
+	types := make([]string, 0, len(validTaskTypes))
+	for taskType := range validTaskTypes {
+		types = append(types, taskType)
+	}
+	return types
 }
 
 func (h *TaskHandler) GetTask(c *gin.Context) {
